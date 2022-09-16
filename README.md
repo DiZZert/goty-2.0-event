@@ -1,2 +1,2 @@
-# goty-2.0-event
- 
+# goty-2.0
+Make GOTY great again
