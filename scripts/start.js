@@ -1,95 +1,116 @@
 ( function( $ ) {
 
-  function doWheel(data) {
+  var effectsArray = $.getJSON("../data/joke_wheel.json");
 
-     const $wheel = $( '.wheel .wheel__inner' );
-     const $wheelSpinClass = $( '.wheel__inner' );
-     let items = jsonObject.length;
-     let diameter = $wheel.height();
-     let radius = diameter / 2;
-     let angle = 360 / items;
-     let circumference = Math.PI * diameter;
-     let height = 80;
-     let width = (circumference / items) + 1;
+  console.log(effectsArray);
 
-     for ( let i = 0; i < jsonObject.length; i++ ) {
 
-         var transform = `rotateY(${ angle * i }deg) translateZ(${ radius }px)`;
-         $( '<div>', {class: 'wheel__segment'} )
-         .html( `<span> <img src="src/assets/wheel_horror/icons/` + jsonObject[i].pic + `" width="60" height="60"> </span>` ).appendTo( $wheel )
-         .css( {'transform': transform,'height': height, 'width': width, 'background-image': 'url(src/assets/wheel_img/buff_allgreen.png)'} )
+  var jsonObject = jQuery.parseJSON(effectsArray);
 
-     }
-     $wheel.css('margin-top','-'+height+'px');
-     $wheel.css('margin-left','-'+width/2+'px');
+  var deletedEffects = [];
 
-     $( ".wheel_button input[type=submit]" ).click(function( event ) {
+      function getRandom(max, min) {
+        return Math.random() * (max - min) + min;
+      }
 
-       $( '.wheel__inner' ).empty()
+      function playSound(name) {
+        var soundFile = document.createElement("audio");
+        soundFile.src = "src/audio/horror/" + name + ".mp3";
+        soundFile.play();
+      }
 
-       let result = [];
-       $.grep(jsonObject, function(item) {
-         if ($.inArray(item, deletedEffects) == -1) result.push(item);
-       });
+      function doWheel(data) {
 
-       jsonObject = result;
+        const $wheel = $( '.wheel .wheel__inner' );
+        const $wheelSpinClass = $( '.wheel__inner' );
+        let items = jsonObject.length;
+        let diameter = $wheel.height();
+        let radius = diameter / 2;
+        let angle = 360 / items;
+        let circumference = Math.PI * diameter;
+        let height = 80;
+        let width = (circumference / items) + 1;
 
-       let items = jsonObject.length;
-       let diameter = $wheel.height();
-       let radius = diameter / 2;
-       let angle = 360 / items;
-       let circumference = Math.PI * diameter;
-       let height = 80;
-       let width = (circumference / items) + 1;
+        for ( let i = 0; i < jsonObject.length; i++ ) {
 
-       for ( let i = 0; i < result.length; i++ ) {
-           var transform = `rotateY(${ angle * i }deg) translateZ(${ radius }px)`;
+            var transform = `rotateY(${ angle * i }deg) translateZ(${ radius }px)`;
+            $( '<div>', {class: 'wheel__segment'} )
+            .html( `<span> <img src="src/assets/wheel_horror/icons/` + jsonObject[i].pic + `" width="60" height="60"> </span>` ).appendTo( $wheel )
+            .css( {'transform': transform,'height': height, 'width': width, 'background-image': 'url(src/assets/wheel_img/buff_allgreen.png)'} )
 
-           $( '<div>', {class: 'wheel__segment'} )
-           .html( `<span> <img src="src/assets/wheel_horror/icons/` + jsonObject[i].pic + `" width="60" height="60"> </span>` ).appendTo( $wheel )
-           .css( {'transform': transform,'height': height, 'width': width, 'background-image': 'url(src/assets/wheel_img/buff_allgreen.png)'} )
-           .click(function() {
+        }
+        $wheel.css('margin-top','-'+height+'px');
+        $wheel.css('margin-left','-'+width/2+'px');
 
-             deletedEffects.push(jsonObject[i]);
-             playSound("crow");
-             console.log(jsonObject[i]);
-           });
-       }
-       $wheel.css('transform-origin','100% 100%');
-       $wheel.css('margin-top','-'+height+'px');
-       $wheel.css('margin-left','-'+width/2+'px');
+        $( ".wheel_button input[type=submit]" ).click(function( event ) {
 
-       $wheel.change();
+          $( '.wheel__inner' ).empty()
 
-       $("#descriptionName").text('');
-       $("#descriptionText").text('');
-       $("#descriptionLegendary").text('');
+          let result = [];
+          $.grep(jsonObject, function(item) {
+            if ($.inArray(item, deletedEffects) == -1) result.push(item);
+          });
 
-       playSound("spin/" + spinSounArray[Math.floor(getRandom(spinSounArray.length,0))]);
+          jsonObject = result;
 
-       $wheelSpinClass.addClass('wheelAnimation');
+          let items = jsonObject.length;
+          let diameter = $wheel.height();
+          let radius = diameter / 2;
+          let angle = 360 / items;
+          let circumference = Math.PI * diameter;
+          let height = 80;
+          let width = (circumference / items) + 1;
 
-         var rotateDeg = getRandom(360,angle/2);
+          for ( let i = 0; i < result.length; i++ ) {
+              var transform = `rotateY(${ angle * i }deg) translateZ(${ radius }px)`;
 
-         var currentPosition = (360 - (rotateDeg-(angle/2)))/angle;
-         var roundedPosition = Math.floor(currentPosition);
+              $( '<div>', {class: 'wheel__segment'} )
+              .html( `<span> <img src="src/assets/wheel_horror/icons/` + jsonObject[i].pic + `" width="60" height="60"> </span>` ).appendTo( $wheel )
+              .css( {'transform': transform,'height': height, 'width': width, 'background-image': 'url(src/assets/wheel_img/buff_allgreen.png)'} )
+              .click(function() {
 
-         $wheelSpinClass.css('transform', 'rotateY(' + rotateDeg + 'deg)');
+                deletedEffects.push(jsonObject[i]);
+                playSound("crow");
+                console.log(jsonObject[i]);
+              });
+          }
+          $wheel.css('transform-origin','100% 100%');
+          $wheel.css('margin-top','-'+height+'px');
+          $wheel.css('margin-left','-'+width/2+'px');
 
-         // console.log("rotated: " + rotateDeg + " current: " + currentPosition + " roundedPosition: " + roundedPosition);
-         console.log("rotated: " + rotateDeg + " current: " + currentPosition + " " + jsonObject[roundedPosition].name);
+          $wheel.change();
 
-         setTimeout(function(){
-           $wheelSpinClass.removeClass('wheelAnimation');
+          $("#descriptionName").text('');
+          $("#descriptionText").text('');
+          $("#descriptionLegendary").text('');
 
-           $("#descriptionName").text(jsonObject[roundedPosition].name);
-           $("#descriptionText").text(jsonObject[roundedPosition].description);
+          playSound("spin/" + spinSounArray[Math.floor(getRandom(spinSounArray.length,0))]);
 
-           playSound("effects/" + posSFXArray[Math.floor(getRandom(posSFXArray.length,0))]);
+          $wheelSpinClass.addClass('wheelAnimation');
 
-         }, 9300);
-      });
+            var rotateDeg = getRandom(360,angle/2);
 
-   }
+            var currentPosition = (360 - (rotateDeg-(angle/2)))/angle;
+            var roundedPosition = Math.floor(currentPosition);
+
+            $wheelSpinClass.css('transform', 'rotateY(' + rotateDeg + 'deg)');
+
+            // console.log("rotated: " + rotateDeg + " current: " + currentPosition + " roundedPosition: " + roundedPosition);
+            console.log("rotated: " + rotateDeg + " current: " + currentPosition + " " + jsonObject[roundedPosition].name);
+
+            setTimeout(function(){
+              $wheelSpinClass.removeClass('wheelAnimation');
+
+              $("#descriptionName").text(jsonObject[roundedPosition].name);
+              $("#descriptionText").text(jsonObject[roundedPosition].description);
+
+              playSound("effects/" + posSFXArray[Math.floor(getRandom(posSFXArray.length,0))]);
+
+            }, 9300);
+         });
+
+      }
+
+      doWheel(jsonObject);
 
 } )( jQuery );
